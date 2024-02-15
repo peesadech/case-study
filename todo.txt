@@ -1,13 +1,19 @@
 สร้าง project done
 database done
 
-test 1
+
 register page  done
 
 login 
-เอาขึ้น github
+เอาขึ้น github done 
 register -> เช็ค email ห้ามซ้ำ
 login -> สร้าง token แล้วเก็บไว้ เพื่อไม่ให้ ต้อง login ทุกครั้งที่เข้ามา
 create case study 
 select type case study 
 สร้าง case ที่ต้องการ เก็บ
+
+สร้าง repo
+เข้า vs code
+git init 
+git remote add origin <repository-url>
+git push -f origin master  
