@@ -1,0 +1,13 @@
+สร้าง project done
+database done
+
+
+register page  done
+
+login 
+เอาขึ้น github
+register -> เช็ค email ห้ามซ้ำ
+login -> สร้าง token แล้วเก็บไว้ เพื่อไม่ให้ ต้อง login ทุกครั้งที่เข้ามา
+create case study 
+select type case study 
+สร้าง case ที่ต้องการ เก็บ
