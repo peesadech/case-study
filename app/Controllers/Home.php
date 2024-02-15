@@ -9,40 +9,67 @@ class Home extends BaseController
 {
     public function index(): string
     {
-      $key = getenv('JWT_SECRET');
-      $session = session();
-      $user_token=$session->get('user_token');
-      if (empty($user_token)) {
+    //   $key = getenv('JWT_SECRET');
+    //   $session = session();
+    //   $user_token=$session->get('user_token');
+    //   if (empty($user_token)) {
     
 
-      $iat = time(); // current timestamp value
-      $exp = $iat + (3600*24*365);
-      $user['email']='test@gmail.com';
-      $payload = array(
-          "iss" => "Issuer of the JWT",
-          "aud" => "Audience that the JWT",
-          "sub" => "Subject of the JWT",
-          "time"=> date("Y-m-d H:i:s"),
-          "iat" => $iat, //Time the JWT issued at
-          "exp" => $exp, // Expiration time of token
-          "email" => $user['email'],
-      );
+    //   $iat = time(); // current timestamp value
+    //   $exp = $iat + (3600*24*365);
+    //   $user['email']='test@gmail.com';
+    //   $payload = array(
+    //       "iss" => "Issuer of the JWT",
+    //       "aud" => "Audience that the JWT",
+    //       "sub" => "Subject of the JWT",
+    //       "time"=> date("Y-m-d H:i:s"),
+    //       "iat" => $iat, //Time the JWT issued at
+    //       "exp" => $exp, // Expiration time of token
+    //       "email" => $user['email'],
+    //   );
         
-      $token = JWT::encode($payload, $key, 'HS256');
-      $newdata = [
-        'user_token'  => $token,
-     ];
+    //   $token = JWT::encode($payload, $key, 'HS256');
+    //   $newdata = [
+    //     'user_token'  => $token,
+    //  ];
     
-    $session->set($newdata);
-    echo 'session created';
-      }else {
+    // $session->set($newdata);
+    // echo 'session created';
+    //   }else {
 
-      $decoded = JWT::decode($user_token, new Key($key, 'HS256'));
-      dd($user_token,$decoded);
-      }
-        return view('home_index');
+    //   $decoded = JWT::decode($user_token, new Key($key, 'HS256'));
+    //   dd($user_token,$decoded);
+    //   }
+    $data=array();
+    $session = session();
+    $data['authData']['user_logged_in']=false;
+    $data['authData']['user_email']='';
+   // $loginData['email']=$session->get('email');
+    if (!empty($session->get('user_logged_in'))) 
+    {
+      $data['authData']['user_logged_in']=$session->get('user_logged_in');
+      $data['authData']['user_email']=$session->get('email');
+      $data['authData']['user_name']=$session->get('user_name');
+    }
+  //  dd($data);
+        return view('home_index',$data);
     }
 
+    public function dashboard(): string
+    {
+      $data=array();
+      $session = session();
+      $data['authData']['user_logged_in']=false;
+      $data['authData']['user_email']='';
+     // $loginData['email']=$session->get('email');
+      if (!empty($session->get('user_logged_in'))) 
+      {
+        $data['authData']['user_logged_in']=$session->get('user_logged_in');
+        $data['authData']['user_email']=$session->get('email');
+        $data['authData']['user_name']=$session->get('user_name');
+      }
+        return view('dashboard',$data);
+    }
     public function register(): string
     {
      
@@ -67,13 +94,42 @@ class Home extends BaseController
            // echo json_encode(array("status" => TRUE,"title"=>'Register',"msg"=>"Create Data Success","type"=>"create"));
         
     }
+    public function logout()
+    {
+      $session=session();
+      $session->destroy();
+      helper('cookie');
+      delete_cookie('user_token');  
+      //  return view('login');
+      //return $this->index();
+      return redirect()->to('/');
+     //  return redirect()->to('/');
+    }
     public function login(): string
     {
+      $data=array();
+      $session = session();
+      $data['authData']['user_logged_in']=false;
+      $data['authData']['user_email']='';
+     // $loginData['email']=$session->get('email');
+      if (!empty($session->get('user_logged_in'))) 
+      {
+        $data['authData']['user_logged_in']=$session->get('user_logged_in');
+        $data['authData']['user_email']=$session->get('email');
+        $data['authData']['user_name']=$session->get('user_name');
+      //  return view('dashboard',$data);
+       //return $this->dashboard();
+       return view('login_success');
+      }else{
         return view('login');
+      }
     }
     public function loginProcess()
     {
        // dd('aaa');
+       $key = getenv('JWT_SECRET');
+       //   $key = getenv('JWT_SECRET');
+       helper('cookie');
        $user_name=$this->request->getVar('txt_login_username');
        $user_password=$this->request->getVar('txt_login_password');
       // dd($user_name,$user_password);
@@ -95,13 +151,31 @@ class Home extends BaseController
                 $ses_data = [
                     'user_id' => $data[0]['user_id'],
                     'user_name' => $data[0]['user_name'],
+                    'user_email' => $data[0]['user_email'],
                    
+                    'user_login_name' => $data[0]['user_login_username'],
+                    'user_login_password' => $data[0]['user_login_password'],
+                    'user_image_path' => $data[0]['user_image_path'],
                    
-                    'user_image_url' => $data[0]['user_image_path'],
-                   
-                    'user_logged_in' => $remember,
+                    'user_logged_in' => true,//$remember,
                 ];
                 $session->set($ses_data);
+                // $iat = time(); // current timestamp value
+                // $exp = $iat + (3600*24*365);
+                // $user['email']='test@gmail.com';
+                // $payload = array(
+                //     "iss" => "Issuer of the JWT",
+                //     "aud" => "Audience that the JWT",
+                //     "sub" => "Subject of the JWT",
+                //     "time"=> date("Y-m-d H:i:s"),
+                //     "iat" => $iat, //Time the JWT issued at
+                //     "exp" => $exp, // Expiration time of token
+                //     "email" => $user['email'],
+                // );
+                  
+                $token = JWT::encode($ses_data, $key, 'HS256');
+               // delete_cookie('user_token');  
+                set_cookie('user_token', $token, 14400);  
                 
               //  $this->addLog($ses_data['account_id'], "store/manager/ManagerAuthen", "Login", "success");
              //   return redirect()->to(base_url('store/manager/order'));
@@ -110,7 +184,14 @@ class Home extends BaseController
             // return redirect()->to(base_url('driver/login'));
               //  return redirect()->to(base_url('driver/dashboard'));
                 //return redirect()->to(base_url('driver/ordersend'));
-                echo 'Welcome '.$user_name;
+             //   echo 'Welcome '.$user_name;
+            
+            //   $this->dashboard();
+             //  return view('login_success');
+            //  return redirect()->route("dashboard"); 
+           //   dd()
+              return redirect()->to('/dashboard');
+             // return $this->dashboard();
             }else {
                 echo 'Invalid user name or password';
             }

@@ -23,7 +23,7 @@
                                                 <label for="txt_shop_name" class="form-label">E-mail</label>
                                                 <div class="input-group has-validation">
                                                 <!-- <input type="hidden" name="id" id="id" value="<?php //echo $update_obj['storeAdmin_id']; ?>"> -->
-                                                    <input type="text" class="form-control" id="txt_login_username" name="txt_login_username" autocomplete="off" aria-describedby="inputGroupPrepend" value="" autocomplete="off"  required>
+                                                    <input type="text" class="form-control" id="txt_login_username" name="txt_login_username" autocomplete="off" aria-describedby="inputGroupPrepend" value="test" autocomplete="off"  required>
                                                     <div class="invalid-feedback">Enter Email</div>
                                                 </div>
                                             </div>
@@ -36,7 +36,7 @@
                                                     <label for="txt_mobile" class="form-label"> Password</label>
                                                   
                                                     <div class="input-group has-validation" >
-                                                        <input type="password" class="form-control" id="txt_login_password" name="txt_login_password" aria-describedby="inputGroupPrepend" value="<?php //echo isset($update_obj[$fieldTitle.'_password'])?$update_obj[$fieldTitle.'_password']:""; ?>"  autocomplete="off"  required>
+                                                        <input type="password" class="form-control" id="txt_login_password" name="txt_login_password" aria-describedby="inputGroupPrepend" value="test<?php //echo isset($update_obj[$fieldTitle.'_password'])?$update_obj[$fieldTitle.'_password']:""; ?>"  autocomplete="off"  required>
                                                         <div class="invalid-feedback">Enter Password </div>
                                                     </div>
                                                    
