@@ -2,16 +2,50 @@
 
 namespace App\Controllers;
 use App\Models\UserModel;
+use \Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class Home extends BaseController
 {
     public function index(): string
     {
-        return view('home');
+      $key = getenv('JWT_SECRET');
+      $session = session();
+      $user_token=$session->get('user_token');
+      if (empty($user_token)) {
+    
+
+      $iat = time(); // current timestamp value
+      $exp = $iat + (3600*24*365);
+      $user['email']='test@gmail.com';
+      $payload = array(
+          "iss" => "Issuer of the JWT",
+          "aud" => "Audience that the JWT",
+          "sub" => "Subject of the JWT",
+          "time"=> date("Y-m-d H:i:s"),
+          "iat" => $iat, //Time the JWT issued at
+          "exp" => $exp, // Expiration time of token
+          "email" => $user['email'],
+      );
+        
+      $token = JWT::encode($payload, $key, 'HS256');
+      $newdata = [
+        'user_token'  => $token,
+     ];
+    
+    $session->set($newdata);
+    echo 'session created';
+      }else {
+
+      $decoded = JWT::decode($user_token, new Key($key, 'HS256'));
+      dd($user_token,$decoded);
+      }
+        return view('home_index');
     }
 
     public function register(): string
     {
+     
         return view('register');
     }
     public function registerProcess()

@@ -5,7 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Home::index',['filter' => 'authFilter']);
 $routes->get('/register', 'Home::register');
 $routes->post('register/process','Home::registerProcess',['as'=>"register_process"]);
 $routes->get('/login', 'Home::login');
