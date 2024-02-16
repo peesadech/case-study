@@ -1,4 +1,9 @@
 
+สร้าง dashboard admin
+สร้าง main category case 
+สร้าง sub category case 
+สร้าง user 
+
 create case study 
 select type case study 
 สร้าง case name ที่ต้องการ เก็บ
