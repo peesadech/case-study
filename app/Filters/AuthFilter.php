@@ -7,6 +7,7 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use App\Models\UserModel;
 
 class AuthFilter implements FilterInterface
 {
@@ -28,81 +29,27 @@ class AuthFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         $key = getenv('JWT_SECRET');
-        //   $key = getenv('JWT_SECRET');
         helper('cookie');
-    //   $session = session();
-    //   $user_token=$session->get('user_token');
-    //   dd($user_token);
-    $user_token=get_cookie('user_token');
-   // dd($user_token);
-      if (empty($user_token)) {
-    //       $iat = time(); // current timestamp value
-    //   $exp = $iat + (3600*24*365);
-    //   $user['email']='test@gmail.com';
-    //   $payload = array(
-    //       "iss" => "Issuer of the JWT",
-    //       "aud" => "Audience that the JWT",
-    //       "sub" => "Subject of the JWT",
-    //       "time"=> date("Y-m-d H:i:s"),
-    //       "iat" => $iat, //Time the JWT issued at
-    //       "exp" => $exp, // Expiration time of token
-    //       "email" => $user['email'],
-    //   );
-        
-    //   $token = JWT::encode($payload, $key, 'HS256');
-    //   set_cookie('user_token', $token, 14400);  
-     // return redirect()->to('/login');
-      }else{
-        $decoded = JWT::decode($user_token, new Key($key, 'HS256'));
-        $dataToken=json_decode(json_encode($decoded),true);
-        $ses_data = [
-         //   'admin_id' => 1,
-          //  'admin_name' => "Super Admin",
-            'user_email' => $dataToken['user_email'],
-            'user_name' => $dataToken['user_name'],
-            'user_login_password' => $dataToken['user_login_password'],
-            'user_level_id' => -1,
-           // 'user_image_url' => 'app-assets/images/avatars/admin.png',
-         
-            'user_logged_in' => true,
-        ];
+       $session = session();
+       
       
-      //  dd($decoded,$dataT);
-        $session = session();
-        $session->set($ses_data);
-       // $session->set_userdata('used_data',$dataT);
-       // $session->set($decoded);
-      //  return redirect()->to(route_to('home'))->withCookies();
-        //dd($user_token,$decoded);
-      }
-       // $header = $request->getHeader("Authorization");
-       // $token = null;
-  
-        // extract the token from the header
-        // if(!empty($header)) {
-        //     if (preg_match('/Bearer\s(\S+)/', $header, $matches)) {
-        //         $token = $matches[1];
-        //     }
-        // }
-  
-        // // check if token is null or empty
-        // if(is_null($token) || empty($token)) {
-        //     $response = service('response');
-        //     $response->setBody('Access denied');
-        //     $response->setStatusCode(401);
-        //     return $response;
-        // }
-  
-        // try {
-        //     // $decoded = JWT::decode($token, $key, array("HS256"));
-        //     $decoded = JWT::decode($token, new Key($key, 'HS256'));
-        // } catch (Exception $ex) {
-        //     $response = service('response');
-        //     $response->setBody('Access denied');
-        //     $response->setStatusCode(401);
-        //     return $response;
-        // }
-        //
+       if (!$session->get('user_logged_in')) 
+       {
+       
+    
+          $user_token=get_cookie('user_token');
+      
+          if (empty($user_token)) {
+              return redirect()->to('login');
+          }else{
+              $decoded = JWT::decode($user_token, new Key($key, 'HS256'));
+              $dataToken=json_decode(json_encode($decoded),true);
+              $checkByToken=$this->loginProcessByToken($dataToken);
+              if (!$checkByToken){
+                return redirect()->to('login');
+              }
+           }
+        }
     }
 
     /**
@@ -120,5 +67,68 @@ class AuthFilter implements FilterInterface
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
         //
+    }
+    public function loginProcessByToken($param)
+    {
+       // dd('aaa');
+       $result=false;
+       $key = getenv('JWT_SECRET');
+       //   $key = getenv('JWT_SECRET');
+       helper('cookie');
+     // dd($param);
+       $user_name=$param['user_login_name'];
+       $user_password=$param['user_login_password'];
+      // dd($user_name,$user_password);
+        $model = new UserModel();
+        $where=array();
+        $where['user_login_username']= $user_name;
+        $where['user_login_password']= $user_password;
+        //$where['user_login_password']= $user_password;
+     
+        $data=$model->limit(1)->where($where)->findAll();
+        $session = session();
+        $session->destroy();
+       // dd($user_name,$user_password,$data);
+         if (count($data)>=1){
+          //  dd($data);
+          //  $pass = $data[0]['user_login_password'];
+            // $verify_password = password_verify($user_password, $pass);
+            // if ($verify_password) {
+                 
+            //     $remember=1;
+                $ses_data = [
+                    'user_id' => $data[0]['user_id'],
+                    'user_name' => $data[0]['user_name'],
+                    'user_email' => $data[0]['user_email'],
+                   
+                    'user_login_username' => $data[0]['user_login_username'],
+                    'user_login_password' => $data[0]['user_login_password'],
+                 //   'user_image_path' => $data[0]['user_image_path'],
+                   
+                    'user_logged_in' => true,//$remember,
+                ];
+                
+                $session->set($ses_data);
+               
+                  
+            //     $token = JWT::encode($ses_data, $key, 'HS256');
+            //    // delete_cookie('user_token');  
+                 
+         
+            //   return redirect()->to('/dashboard');
+         
+            // }else {
+            //     echo 'Invalid user name or password';
+            // }
+            //return 'found logged in';
+            $result=true;
+          
+         }
+        //  else {
+        //     return 'Cannot found user ';
+        //  }
+        return $result;
+      
+        
     }
 }

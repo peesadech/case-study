@@ -25,6 +25,8 @@ class Filters extends BaseConfig
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
         'authFilter' => \App\Filters\AuthFilter::class,
+        'AuthCheck' => \App\Filters\AuthCheckFilter::class,
+        'AlreadyLoggedIn' => \App\Filters\AlreadyLoggedInFilter::class,
     ];
 
     /**
@@ -38,6 +40,9 @@ class Filters extends BaseConfig
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+          //  'authFilter' => ['except' => ['/','login', 'login/*','/login']],
+          // 'loginfilter' => ['except' => ['/','login', 'login/*']],
+        //  'loginfilter' => ['except' => ['/','login', 'login/*']],
         ],
         'after' => [
             'toolbar',

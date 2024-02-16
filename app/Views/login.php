@@ -23,7 +23,7 @@
                                                 <label for="txt_shop_name" class="form-label">E-mail</label>
                                                 <div class="input-group has-validation">
                                                 <!-- <input type="hidden" name="id" id="id" value="<?php //echo $update_obj['storeAdmin_id']; ?>"> -->
-                                                    <input type="text" class="form-control" id="txt_login_username" name="txt_login_username" autocomplete="off" aria-describedby="inputGroupPrepend" value="test" autocomplete="off"  required>
+                                                    <input type="email" class="form-control" id="txt_login_username" name="txt_login_username" autocomplete="off" aria-describedby="inputGroupPrepend" value="<?php if(session()->getFlashdata("input_email")) {echo session()->getFlashdata("input_email"); } ?>" autocomplete="off"  required>
                                                     <div class="invalid-feedback">Enter Email</div>
                                                 </div>
                                             </div>
@@ -56,7 +56,15 @@
                                        
                                       
                     </form>
-                                    
+                    <?php if(session()->getFlashdata("error_message")) { ?>
+                        <div id="flash-message" style="display: none;margin-top:50px" class="alert alert-danger">
+
+
+                        <p class='flashMsg flashError'> <?php echo session()->getFlashdata("error_message");?></p>
+
+                            <!-- Flash message content will be inserted here -->
+                        </div>
+                        <?php } ?>
                                 </div>
                                
                             </div>
@@ -75,9 +83,17 @@
         });
     
 </script>      
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
         var isRtl = $('html').attr('data-textdirection') === 'rtl';
+        if ($('#flash-message').length) {
+        // Get flash message content
+        var flashMessage = $('#flash-message').text().trim();
+        
+        // Show flash message
+            $('#flash-message').slideDown().delay(3000).slideUp(); // Adjust delay as needed
+        }
       
         $("#register_button").click(function() {
         

@@ -1,9 +1,24 @@
-register -> เช็ค email ห้ามซ้ำ
+
 create case study 
 select type case study 
-สร้าง case ที่ต้องการ เก็บ
+สร้าง case name ที่ต้องการ เก็บ
+
+
 
 ******* done *********
+admin01@gmail.com,11223344
+test01@gmail.com,1234
+register -> เช็ค email ห้ามซ้ำ
+https://www.positronx.io/codeigniter-authentication-login-and-registration-tutorial/
+ปรับ authen และ get token
+authen เช็ค ว่า login หรือไม่ 
+   - ถ้าไม่ ให้ 
+    ไปเช็ค token จาก cookie 
+        -ถ้ามี ให้ส่ง username,password ไป checkLogin เพื่อสร้าง session และ token
+        -ถ้า ไม่มี ไปหน้า login 
+           *** หน้า login ไป loginProcess แล้ว hash pws แล้ส่งไป checkLogin
+   - ถ้ามี ก็ไม่ทำอะ
+
 สร้าง project 
 database 
 
